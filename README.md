@@ -1,4 +1,6 @@
 # Ex.No:1a  			Study of Socket Programming
+## Name: Deepika.U
+## Register no: 212225040060
 
 ## Aim: 
 To perform a study on Socket Programming
@@ -52,6 +54,84 @@ Socket programming finds applications in various domains, including web developm
 3.	File Transfer Protocol: Protocols like FTP (File Transfer Protocol) utilize socket programming for transferring files between a client and a server.
 4.	Networked Games: Online multiplayer games rely on socket programming to facilitate communication between game clients and servers.
 5.	RPC mechanisms: which allow processes to execute code on a remote server, often use socket programming for communication.
+
+## INPUT:
+
+import socket
+import threading
+import time
+
+
+def server():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind(("127.0.0.1", 5000))
+    s.listen(1)
+    print("server waiting")
+
+    conn, addr = s.accept()
+    print("connected by :", addr)
+
+    responses = {
+        "Good morning, Server. Are you available?": "Good morning. Yes, I am available. How may I assist you?",
+        "Could you provide information about the Computer Science Engineering department?": "Certainly. The Computer Science Engineering department offers quality education, advanced laboratories, and excellent placement opportunities.",
+        "Thank you for your assistance. Goodbye": "You are welcome. It was my pleasure assisting you. Have a wonderful day."
+    }
+
+    while True:
+        data = conn.recv(1024).decode()
+        if not data:
+            break
+
+        print("client says:", data)
+
+        reply = responses.get(data, "Request received and processed successfully.")
+        print("Server says:", reply)
+        conn.send(reply.encode())
+
+        if data == "Please terminate this session.":
+            print("Server says: process completed")
+            break
+
+    conn.close()
+    s.close()
+
+
+def client():
+    time.sleep(1)
+
+    c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    c.connect(("127.0.0.1", 5000))
+
+    messages = [
+        "Good morning, Server. Are you available?",
+        "Could you provide information about the Computer Science Engineering department?",
+        "Thank you for your assistance. Goodbye"
+    ]
+
+    for msg in messages:
+        c.send(msg.encode())
+        response = c.recv(1024).decode()
+        time.sleep(1)
+
+    c.close()
+
+
+server_thread = threading.Thread(target=server)
+client_thread = threading.Thread(target=client)
+
+server_thread.start()
+client_thread.start()
+
+server_thread.join()
+client_thread.join()
+
+print("All conversations completed successfully.")
+
+
+## OUTPUT:
+
+
+<img width="1920" height="1080" alt="cn1a - Copy" src="https://github.com/user-attachments/assets/38f3b033-f3c3-4a2f-bafb-3ccd2e0bc972" />
 
 
 ## Result:
